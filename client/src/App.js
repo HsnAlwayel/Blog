@@ -1,18 +1,23 @@
-import React from "react";
-import { observer } from "mobx-react";
+import React, { useEffect } from "react";
+import { useDispatch } from "react-redux";
 
 // Styles
 import { Container, AppBar, Typography, Grow, Grid } from "@material-ui/core";
 import memories from "./images/memories.png";
 import useStyles from "./styles";
+
 // Components
 import Posts from "./components/Posts/Posts";
 import Form from "./components/Form/Form";
-import postStore from "./stores/postStore";
+import { getPosts } from "./Redux/actions/posts";
 
 const App = () => {
   const classes = useStyles();
-  postStore.fetchPosts();
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getPosts());
+  }, [dispatch]);
+
   return (
     <Container maxWidth="lg">
       <AppBar className={classes.appBar} position="static" color="inherit">
@@ -47,4 +52,4 @@ const App = () => {
   );
 };
 
-export default observer(App);
+export default App;
