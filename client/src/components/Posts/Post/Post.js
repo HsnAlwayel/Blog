@@ -53,7 +53,7 @@ const Post = ({ post }) => {
         </Button>
         <Button size="small" color="primary">
           <DeleteIcon fontSize="small" />
-          Like
+          Delete
           {post.likeCount}
         </Button>
       </CardActions>

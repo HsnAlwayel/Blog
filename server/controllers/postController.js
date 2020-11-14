@@ -18,3 +18,15 @@ exports.createPost = async (req, res) => {
     res.status(409).json({ message: error.message });
   }
 };
+
+exports.updatePost = async (req, res) => {
+  const { id: _id } = req.params;
+  try {
+    const updatedPost = await Post.findByIdAndUpdate(_id, req.body, {
+      new: true,
+    });
+    res.status(204).json(updatedPost);
+  } catch (error) {
+    res.status(409).json({ message: error.message });
+  }
+};

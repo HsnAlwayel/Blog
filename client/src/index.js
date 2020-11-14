@@ -1,6 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
+import "./index.css";
+
 // Redux
 import { Provider } from "react-redux";
 import { createStore, applyMiddleware, compose } from "redux";
