@@ -1,29 +1,50 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import FileBase from "react-file-base64";
 import { useDispatch } from "react-redux";
-import { createPost } from "../../Redux/actions/posts";
+import { createPost, updatePost } from "../../Redux/actions/posts";
+import { useSelector } from "react-redux";
 
 // Styles
 import useStyles from "./styles";
 import { TextField, Button, Typography, Paper } from "@material-ui/core";
 
-const Form = () => {
+const Form = ({ currentId, setCurrentId }) => {
   const classes = useStyles();
-  const [postData, setpostData] = useState({
+  const post = useSelector((state) =>
+    currentId ? state.posts.find((p) => p._id === currentId) : null
+  );
+  const dispatch = useDispatch();
+  const [postData, setPostData] = useState({
     creator: "",
     title: "",
     message: "",
     tags: "",
     selectedFile: "",
   });
-  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (post) setPostData(post);
+  }, [post]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    dispatch(createPost(postData));
+    if (currentId) {
+      dispatch(updatePost(currentId, postData));
+    } else {
+      dispatch(createPost(postData));
+    }
+    clear();
   };
-  const clear = () => {};
+  const clear = () => {
+    setCurrentId(null);
+    setPostData({
+      creator: "",
+      title: "",
+      message: "",
+      tags: "",
+      selectedFile: "",
+    });
+  };
   return (
     <Paper className={classes.paper}>
       <form
@@ -32,7 +53,9 @@ const Form = () => {
         className={`${classes.root} ${classes.form}`}
         onSubmit={handleSubmit}
       >
-        <Typography variant="h6">Creating a Post</Typography>
+        <Typography variant="h6">
+          {currentId ? "Updating" : "Creating"} a Post
+        </Typography>
         <TextField
           name="creator"
           variant="outlined"
@@ -40,7 +63,7 @@ const Form = () => {
           fullWidth
           value={postData.creator}
           onChange={(event) =>
-            setpostData({ ...postData, creator: event.target.value })
+            setPostData({ ...postData, creator: event.target.value })
           }
         />
         <TextField
@@ -50,7 +73,7 @@ const Form = () => {
           fullWidth
           value={postData.title}
           onChange={(event) =>
-            setpostData({ ...postData, title: event.target.value })
+            setPostData({ ...postData, title: event.target.value })
           }
         />
         <TextField
@@ -60,7 +83,7 @@ const Form = () => {
           fullWidth
           value={postData.tags}
           onChange={(event) =>
-            setpostData({ ...postData, tags: event.target.value })
+            setPostData({ ...postData, tags: event.target.value })
           }
         />
         <TextField
@@ -70,7 +93,7 @@ const Form = () => {
           fullWidth
           value={postData.message}
           onChange={(event) =>
-            setpostData({ ...postData, message: event.target.value })
+            setPostData({ ...postData, message: event.target.value })
           }
         />
         <div className={classes.fileInput}>
@@ -78,7 +101,7 @@ const Form = () => {
             type="file"
             multiple={false}
             onDone={({ base64 }) =>
-              setpostData({ ...postData, selectedFile: base64 })
+              setPostData({ ...postData, selectedFile: base64 })
             }
           />
         </div>
@@ -92,13 +115,7 @@ const Form = () => {
         >
           Submit
         </Button>
-        <Button
-          variant="contained"
-          color="secondary"
-          type="submit"
-          fullWidth
-          onClick={clear}
-        >
+        <Button variant="contained" color="secondary" fullWidth onClick={clear}>
           clear
         </Button>
       </form>

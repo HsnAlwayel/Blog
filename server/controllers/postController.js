@@ -20,12 +20,23 @@ exports.createPost = async (req, res) => {
 };
 
 exports.updatePost = async (req, res) => {
-  const { id: _id } = req.params;
+  const { id } = req.params;
+
   try {
-    const updatedPost = await Post.findByIdAndUpdate(_id, req.body, {
+    const updatedPost = await Post.findByIdAndUpdate(id, req.body, {
       new: true,
     });
     res.status(204).json(updatedPost);
+  } catch (error) {
+    res.status(409).json({ message: error.message });
+  }
+};
+
+exports.deletePost = async (req, res) => {
+  const { id } = req.params;
+  try {
+    await Post.findByIdAndRemove(id);
+    res.json({ message: "Post deleted" });
   } catch (error) {
     res.status(409).json({ message: error.message });
   }
