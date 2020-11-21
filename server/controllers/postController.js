@@ -1,4 +1,5 @@
 const Post = require("../models/post");
+const mongoose = require("mongoose");
 
 exports.getPosts = async (req, res) => {
   try {
@@ -22,14 +23,12 @@ exports.createPost = async (req, res) => {
 exports.updatePost = async (req, res) => {
   const { id } = req.params;
 
-  try {
-    const updatedPost = await Post.findByIdAndUpdate(id, req.body, {
-      new: true,
-    });
-    res.status(204).json(updatedPost);
-  } catch (error) {
-    res.status(409).json({ message: error.message });
-  }
+  // if (!mongoose.Types.ObjectId.isValid(id))
+  //   return res.status(404).send(`No post with id: ${id}`);
+
+  await Post.findByIdAndUpdate(id, req.body, { new: true });
+
+  res.json(req.body);
 };
 
 exports.deletePost = async (req, res) => {
