@@ -40,3 +40,19 @@ exports.deletePost = async (req, res) => {
     res.status(409).json({ message: error.message });
   }
 };
+
+exports.likePost = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const post = await Post.findById(id);
+    const updatedPost = await Post.findByIdAndUpdate(
+      id,
+      { likeCount: post.likeCount + 1 },
+      { new: true }
+    );
+    res.json(updatedPost);
+  } catch (error) {
+    res.status(409).json({ message: error.message });
+  }
+};
